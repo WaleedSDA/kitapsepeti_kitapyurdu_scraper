@@ -16,3 +16,12 @@ class DotEnvGetter(metaclass=Singleton):
     @property
     def db_name(self):
         return os.getenv("DB_NAME")
+
+    @property
+    def proxy_url(self):
+        return os.getenv("PROXY_URL")
+
+    @property
+    def use_proxy(self):
+        result = os.getenv("USE_PROXY")
+        return True if result == "True" else False
