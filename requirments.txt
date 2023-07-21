@@ -1,0 +1,8 @@
+altgraph==0.17.3
+future==0.18.3
+macholib==1.16.2
+pip==23.2
+setuptools==68.0.0
+six==1.16.0
+wheel==0.40.0
+dataclasses-serialization==1.3.1
