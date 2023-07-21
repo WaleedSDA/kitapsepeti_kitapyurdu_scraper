@@ -2,7 +2,7 @@ from datetime import datetime
 from dataclasses import dataclass
 from typing import List
 
-from core.db.data_classes.historical_price import ScrapedData
+from core.data_classes.historical_price import HistoricalPrice
 
 
 @dataclass
@@ -13,5 +13,5 @@ class ScrapedData:
     seller: str  # required
     auther: str  # required
     publisher: str  # required
-    historical_prices: List[ScrapedData] = list
+    historical_prices: List[HistoricalPrice] = list
     last_scrape_time: datetime = datetime.utcnow()
