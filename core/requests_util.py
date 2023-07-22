@@ -14,19 +14,12 @@ class Request:
                 'https': proxy_url
             }
 
-    def post(self, url: str, payload: dict = None, return_whole_response=False):
-
-        return self.__send("POST", url, payload, return_whole_response)
-
     def get(self, url: str, payload: dict = None, return_whole_response=False):
-        return self.__send("GET", url, payload, return_whole_response)
+        return self.__send(url, "GET", payload, return_whole_response)
 
-    def __send(self, url, request_type, payload: dict, return_whole_response, headers=None):
+    def __send(self, url, request_type, payload: dict, headers=None):
         response = self.__session.request(request_type, url, headers=headers, data=payload)
 
         if response.status_code == 200:
-            if not return_whole_response:
-                response_data = response.text
-                return json.loads(response_data)
             return response
         raise f"Got {response.status_code} while sending request"

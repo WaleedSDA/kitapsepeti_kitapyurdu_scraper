@@ -4,3 +4,7 @@ class NoProductsFound(Exception):
 
 class ErrorWhileScrapping(Exception):
     pass
+
+
+class NoSuchCategory(Exception):
+    pass

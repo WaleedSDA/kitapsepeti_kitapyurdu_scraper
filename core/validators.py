@@ -1,7 +1,6 @@
 from datetime import datetime
 
 
-
 def validate_currency(currency):
     if not isinstance(currency, str):
         raise ValueError(f'Currency must be a string, not {type(currency).__name__}')
@@ -26,5 +25,3 @@ def validate_string(value, field_name):
         raise ValueError(f'{field_name} must be a string, not {type(value).__name__}')
     if not value:
         raise ValueError(f'{field_name} cannot be empty')
-
-

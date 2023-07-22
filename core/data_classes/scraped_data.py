@@ -12,14 +12,14 @@ class ScrapedData:
     book_current_price: float  # required
     currency: str  # required
     seller: str  # required
-    author: str  # required
+    authors: List[str]  # required
     publisher: str  # required
     historical_prices: List[HistoricalPrice] = field(default_factory=list)
     last_scrape_time: datetime = field(default_factory=datetime.utcnow)
 
-    def validate_list_of_historical_prices(self, historical_prices):
-        if historical_prices:
-            if not all(isinstance(hp, HistoricalPrice) for hp in historical_prices):
+    def validate_list_of_historical_prices(self):
+        if self.historical_prices:
+            if not all(isinstance(hp, HistoricalPrice) for hp in self.historical_prices):
                 raise ValueError('All elements in historical_prices must be of type HistoricalPrice')
 
     def __post_init__(self):
@@ -27,7 +27,6 @@ class ScrapedData:
         validate_price(self.book_current_price)
         validate_currency(self.currency)
         validate_string(self.seller, 'Seller')
-        validate_string(self.author, 'Author')
         validate_string(self.publisher, 'Publisher')
-        self.validate_list_of_historical_prices(self.historical_prices)
+        self.validate_list_of_historical_prices()
         validate_scrape_time(self.last_scrape_time)

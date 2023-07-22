@@ -1,3 +1,42 @@
-# kitapsepeti_kitapyurdu_scraper
+# KitapSepeti and KitapYurdu Scraper
 
-all date/times used in this repositories are UTC time_zone not local time, (if used local time, and we run the project in a server outside turkey, all the date/time will be the local time of that server that i used UTC for simplicity)
+This project scrapes data from two server-side rendered websites, KitapSepeti and KitapYurdu. The scraper utilizes
+Scrapy and Beautiful Soup libraries to navigate the sites, extract raw data, format it, and save it to a database.
+
+All date/times in this repository are in UTC timezone for consistency.
+
+## Choosing the Right Library
+
+The right library for a web scraping project depends heavily on the nature of the target website. For these websites,
+using 'requests' library isn't feasible since the sites are server-side rendered. Selenium Wire isn't needed either
+because we don't need to monitor the network.
+
+Selenium is useful when a website needs UI interaction, but it's not required in our case. Plus, Selenium tends to be
+resource-heavy since it runs a browser.
+
+Thus, this project uses Scrapy for one site and Beautiful Soup for the other. Both are great tools for the job and
+allows me to demonstrate the versatility of my code architecture.
+
+## Template Design Pattern
+
+The scraping process for most websites follows a similar pattern but differs in implementation: set up the scraper, open
+the website, navigate to the desired category, fetch raw data, and format it. The last steps are always the same: saving
+the data to a database or updating an existing product's price.
+
+Using the Template Design pattern enables flexibility in our choice of scraping library. We're not forced to use one
+tool when another might be better suited for a particular website.
+
+## How to Use
+
+Please follow the guidelines below to use the scraper. Make sure to have all the necessary dependencies installed.
+
+<Instructions to install, setup and run the project>
+
+<Options or configurations>
+
+## Dependencies
+
+* Beautiful Soup
+* Scrapy
+* <Other dependencies>
+
