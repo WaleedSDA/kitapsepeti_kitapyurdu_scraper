@@ -8,13 +8,15 @@ All date/times in this repository are in UTC timezone for consistency.
 ## Choosing the Right Library
 
 The right library for a web scraping project depends heavily on the nature of the target website. For these websites,
-using 'requests' library isn't feasible since the sites are server-side rendered. Selenium Wire isn't needed either
+using 'requests' library isn't feasible since the sites are server-side rendered (I mean we do not get the data as json
+to parse it easily). Selenium Wire isn't needed either
 because we don't need to monitor the network.
 
 Selenium is useful when a website needs UI interaction, but it's not required in our case. Plus, Selenium tends to be
-resource-heavy since it runs a browser.
+resource-heavy since it runs a browser (we still can make it run in headless mood).
 
-Thus, this project uses Scrapy for one site and Beautiful Soup for the other. Both are great tools for the job and
+Thus, this project uses lxml/beautiful soup for one site and selenium for the other. Both are great tools for the job
+and
 allows me to demonstrate the versatility of my code architecture.
 
 ## Template Design Pattern
@@ -26,17 +28,5 @@ the data to a database or updating an existing product's price.
 Using the Template Design pattern enables flexibility in our choice of scraping library. We're not forced to use one
 tool when another might be better suited for a particular website.
 
-## How to Use
 
-Please follow the guidelines below to use the scraper. Make sure to have all the necessary dependencies installed.
-
-<Instructions to install, setup and run the project>
-
-<Options or configurations>
-
-## Dependencies
-
-* Beautiful Soup
-* Scrapy
-* <Other dependencies>
 
