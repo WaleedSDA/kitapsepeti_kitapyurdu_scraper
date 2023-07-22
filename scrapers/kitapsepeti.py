@@ -84,3 +84,6 @@ class KitapsepetiScraper(ScraperAbstract):
     def _go_to_the_main_page(self):
         # we do not need to go to the main page.
         pass
+
+    def _use_selenium_driver(self) -> bool:
+        return False

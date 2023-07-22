@@ -7,16 +7,19 @@ from core.data_classes.scraped_data import ScrapedData
 from core.db.scraped_data_col import ScrapedDataCol
 from core.errors import NoProductsFound, ErrorWhileScrapping, NoSuchCategory
 from core.requests_util import Request
+from core.selenium_driver import get_driver
 
 
 class ScraperAbstract(ABC):
 
     def __init__(self, category):
+        self._driver = None
         self.requests = Request()
         self._raw_data = []
         self.__col = ScrapedDataCol()
-        """doing the exception here will make the human error less likely,
-         because devs will forget to handle this exception
+        """
+        doing the exception here will make the human error less likely,
+        because devs will forget to handle this exception
         """
         try:
             self.category_name = self.category_mapper(category)
@@ -45,6 +48,10 @@ class ScraperAbstract(ABC):
         pass
 
     @abstractmethod
+    def _use_selenium_driver(self) -> bool:
+        pass
+
+    @abstractmethod
     def _get_final_data(self) -> List[ScrapedData]:
         pass
 
@@ -60,6 +67,8 @@ class ScraperAbstract(ABC):
     @final
     def start_scraping(self):
         try:
+            if self._use_selenium_driver():
+                self._driver = get_driver()
             self._go_to_the_main_page()
             self._go_to_specific_category()
             self._scrape_raw_data()
@@ -68,9 +77,10 @@ class ScraperAbstract(ABC):
             response = Response("OK")
             return response
 
-        # except(NoProductsFound, ErrorWhileScrapping, Exception) as e:
-        #     response = Response(str(e))
-        #     return response
+        except(NoProductsFound, ErrorWhileScrapping, Exception) as e:
+            response = Response(str(e))
+            return response
 
         finally:
-            pass
+            if self._use_selenium_driver():
+                self._driver.quit()
