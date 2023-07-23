@@ -1,89 +1,117 @@
-from lxml import html
-
 from core.data_classes.scraped_data import ScrapedData
+from core.driver_utils import get_element_by_xpath, get_all_elements_by_xpath
 from core.scraper_abstract import ScraperAbstract
 
 
 class KitapsepetiScraper(ScraperAbstract):
+    """
+    Implements the abstract scraper for the website 'Kitapsepeti'.
+    """
 
     @property
     def _scraper_name(self):
+        """Name of the scraper"""
         return "Kitapsepeti"
 
-    __page_number = 1
-    __page_tree = None
+    __scraped_data = []
 
-    def is_there_next_page(self) -> bool:
-        if self.__page_tree.xpath('//a[@class="last"]'):
-            return True
-        return False
+    def _is_there_next_page(self) -> bool:
+        """Determines if there is a next page on the website to scrape"""
+        pass
 
-    def category_mapper(self, category) -> str:
+    def __get_number_of_available_pages(self):
+        """Gets the number of available pages on the website"""
+        element = get_element_by_xpath(self._driver, '(//div[@id="pager-wrapper"]/div/div/a)[last()-1]')
+        return int(element.text)
+
+    def _category_mapper(self, category) -> str:
+        """Maps input category to corresponding category on the website
+
+        Args:
+            category (str): Category name to map.
+
+        Returns:
+            str: Mapped category name on the website.
+        """
         mapper = {  # adding this to the db and cashing it using redis will be a better choice
-            "Kids": "22",
-            "General": "1",
-            "Literature": "16",
-            "Exams": "28",
-            "English": "25",
-            "non-literary": "19",
+            "Kids": "cocuk-kitaplari",
+            "General": "cok-satan-kitaplar",
+            "Literature": "roman",
+            "Exams": "sinavlara-hazirlik-kitaplari",
+            "Turkish_Literature": "turk-edebiyati",
+            "sci-fi": "bilimkurgu",
+            "Anime": "cizgi-roman"
         }
         return mapper[category]
 
     @property
-    def website_url(self):
-        return f"https://www.kitapyurdu.com/index.php?route=product/best_sellers" \
-               f"&page={self.__page_number}&list_id={self.category_name}&filter_in_stock=1"
+    def _website_url(self):
+        """Generates the website URL for a given category and page number
+
+        Returns:
+            str: URL of the website.
+        """
+        return f"https://www.kitapsepeti.com/{self._category_name}?pg={self._page_number}"
 
     def _scrape_raw_data(self):
-        is_there_next_page = True
-        while is_there_next_page:
-            self.__go_to_products_page()
-            books = self.__page_tree.xpath('//*[@class="product-cr"]')
-            self._raw_data.extend(books)
-            self.__page_number += 1
-            is_there_next_page = self.is_there_next_page()
+        """Scrapes raw data from the website"""
+        number_of_pages = self.__get_number_of_available_pages()
+        number_of_pages = 2
+        for page_number in range(2, number_of_pages + 1):
+            books = get_all_elements_by_xpath(self._driver,
+                                              '(//div[contains(@class, "catalogWrapper")])[2]//div[contains(@class, "productDetails")]')
+            for book in books:
+                self.__scraped_data.append(self.__get_transformed_book(book))
+
+            self._page_number = page_number
+            self._go_to_specific_category()
+
+    def __get_transformed_book(self, book):
+        """Transforms the raw book data into ScrapedData format
+
+        Args:
+            book: Raw book data.
+
+        Returns:
+            ScrapedData: Transformed book data.
+        """
+        book_name, publisher, auther = get_all_elements_by_xpath(book, './/div[@class="row"]/a')
+        price = get_element_by_xpath(book, './/div[contains(@class, "currentPrice")]').text
+        price = float(price.replace(" ", "").replace("TL", "").replace(",", "."))
+        publisher = publisher.text
+        book_name = book_name.text
+        auther = auther.text
+        return ScrapedData(
+            book_name=book_name,
+            book_current_price=price,
+            currency="TRY",
+            seller=self._scraper_name,
+            authors=[auther],
+            publisher=publisher
+        )
 
     def _get_final_data(self):
-        scraped_data = []
-        for idx, book in enumerate(self._raw_data):
-            book_name = book.xpath('.//*[@class="name ellipsis"]/a/span')[0].text
-            # kitapyurdu does not display more than one auther name
-            publisher = book.xpath('.//*[@class="publisher"]/span/a/span')[0].text
-            try:
-                price = float(
-                    book.xpath('.//div[@class="price-new "]/span/text()')[1].replace(" ", "").replace(",", "."))
-            except IndexError:  # this means that the book was never on sale:)
-                price = float(
-                    book.xpath('.//span[@class="price-old "]/span[2]/text()')[0].replace(" ", "").replace(",", "."))
+        """Returns the scraped data after finishing the scraping process
 
-            currency = "TRY"
-
-            # in the main page of search they show only one writer, if we need them all,
-            # we need to make another request for all books, which will take 3 times the time
-            try:
-                authors = [book.xpath('.//*[@class="author"]/span/a/span')[0].text]
-            except IndexError:
-                authors = []  # means no auther
-            scraped_data.append(ScrapedData(
-                book_name=book_name,
-                book_current_price=price,
-                currency=currency,
-                seller=self._scraper_name,
-                authors=authors,
-                publisher=publisher,
-            ))
-        return scraped_data
+        Returns:
+            List[ScrapedData]: List of the scraped data.
+        """
+        return self.__scraped_data
 
     def _go_to_specific_category(self):
-        pass
-
-    def __go_to_products_page(self):
-        response = self.requests.get(self.website_url)
-        self.__page_tree = html.fromstring(response.content)
+        """Navigates to the URL of a specific category on the website"""
+        # blocking extra networks will differently help speeding thing up
+        self._driver.get(self._website_url)
 
     def _go_to_the_main_page(self):
+        """Navigates to the main page of the website"""
         # we do not need to go to the main page.
         pass
 
     def _use_selenium_driver(self) -> bool:
-        return False
+        """Determines whether the selenium driver is needed for the website
+
+        Returns:
+            bool: True if the selenium driver is needed, False otherwise.
+        """
+        return True
