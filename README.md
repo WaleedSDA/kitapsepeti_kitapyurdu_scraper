@@ -66,7 +66,7 @@ those resulting from product unavailability. You can find the exceptions in `cor
 This project has been developed following the Test-Driven Development (TDD) approach.
 
 **Note:** Given the vast quantity of books on KitapSepeti, the number of pages to scrape has been set to 5 to simplify
-testing. To scrape all pages, remove line 41 in `scrapers/kitapsepeti`.
+testing. To scrape all pages, remove line 65 in `scrapers/kitapsepeti`.
 
 **Note:** Docker image creation was intended but i have no access for an amd64 laptop (chrome does not exist for arm64)
 **Note:** i am using python3.11
