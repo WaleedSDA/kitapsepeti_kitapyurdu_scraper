@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, final
 
 from flask import Response
+from seleniumwire.undetected_chromedriver import Chrome
 
 from core.data_classes.scraped_data import ScrapedData
 from core.db.scraped_data_col import ScrapedDataCol
@@ -13,8 +14,7 @@ from core.selenium_driver import get_driver
 class ScraperAbstract(ABC):
 
     def __init__(self, category):
-        self._driver = None
-        self.requests = Request()
+        self._requests = Request()
         self._raw_data = []
         self.__col = ScrapedDataCol()
         """
@@ -22,7 +22,7 @@ class ScraperAbstract(ABC):
         because devs will forget to handle this exception
         """
         try:
-            self.category_name = self.category_mapper(category)
+            self._category_name = self._category_mapper(category)
         except KeyError:
             raise NoSuchCategory
 
@@ -44,7 +44,7 @@ class ScraperAbstract(ABC):
         pass
 
     @abstractmethod
-    def is_there_next_page(self) -> bool:
+    def _is_there_next_page(self) -> bool:
         pass
 
     @abstractmethod
@@ -57,18 +57,19 @@ class ScraperAbstract(ABC):
 
     @property
     @abstractmethod
-    def website_url(self):
+    def _website_url(self):
         pass
 
     @abstractmethod
-    def category_mapper(self, category) -> str:
+    def _category_mapper(self, category) -> str:
         pass
 
     @final
     def start_scraping(self):
         try:
             if self._use_selenium_driver():
-                self._driver = get_driver()
+                # the reason it is initialized here is we do not want chrome to open immediately in the constructor
+                self._driver: Chrome = get_driver()
             self._go_to_the_main_page()
             self._go_to_specific_category()
             self._scrape_raw_data()

@@ -1,4 +1,4 @@
-# KitapSepeti and KitapYurdu Scraper
+# Kitapsepeti and Kitapyurdu Scraper
 
 This project scrapes data from two server-side rendered websites, KitapSepeti and KitapYurdu. The scraper utilizes
 Scrapy and Beautiful Soup libraries to navigate the sites, extract raw data, format it, and save it to a database.
@@ -28,5 +28,25 @@ the data to a database or updating an existing product's price.
 Using the Template Design pattern enables flexibility in our choice of scraping library. We're not forced to use one
 tool when another might be better suited for a particular website.
 
+there is mapping for categories, i believe that your company will have a united naming for categories that is different
+than the websites, so there is mapping from "Smart Maple" naming to Kitapsepeti and Kitapyurdu naming.
 
+accepted category names for Kitapsepeti are:
+Kids
+General
+Literature
+Exams
+Turkish_Literature
+sci-fi
+Anime
+
+accepted category names for Kitapyurdu are:
+Kids
+General
+Literature
+Exams
+English
+non-literary
+
+mistakes you do in the parameter of the category will rais a no category found exception.
 
