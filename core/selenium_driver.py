@@ -30,5 +30,4 @@ def get_driver(use_headless_mode: bool = True):
     # Create a new instance of the Selenium WebDriver using the specified options.
     driver = uc.Chrome(options=options)
 
-
     return driver
