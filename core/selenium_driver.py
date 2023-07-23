@@ -28,6 +28,9 @@ def get_driver(use_headless_mode: bool = True):
     options.add_argument('--ignore-certificate-errors')
 
     # Create a new instance of the Selenium WebDriver using the specified options.
+    print("going to start driver")
     driver = uc.Chrome(options=options)
+    print("finished")
+
 
     return driver

@@ -152,7 +152,7 @@ class ScraperAbstract(ABC):
             final_data = self._get_final_data()
             self.__col.add_scraped_data_to_db(final_data)
             print(f"{self._scraper_name}/{self._category_name}: Done")
-        except(NoProductsFound, ErrorWhileScrapping, Exception) as e:
+        except(NoProductsFound, ErrorWhileScrapping) as e:
             print(f"{self._scraper_name}/{self._category_name}: {e}")
 
         finally:

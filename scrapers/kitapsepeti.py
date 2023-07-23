@@ -53,13 +53,19 @@ class KitapsepetiScraper(ScraperAbstract):
         """
         return f"https://www.kitapsepeti.com/{self._category_name}?pg={self._page_number}"
 
+    @property
+    def __book_frame_xpath(self):
+        if self._category_name == "cok-satan-kitaplar":
+            return '//div[contains(@class, "productDetails")]'
+        return '(//div[contains(@class, "catalogWrapper")])[2]//div[contains(@class, "productDetails")]'
+
     def _scrape_raw_data(self):
         """Scrapes raw data from the website"""
         number_of_pages = self.__get_number_of_available_pages()
-        number_of_pages = 2
+        number_of_pages = 5
         for page_number in range(2, number_of_pages + 1):
-            books = get_all_elements_by_xpath(self._driver,
-                                              '(//div[contains(@class, "catalogWrapper")])[2]//div[contains(@class, "productDetails")]')
+
+            books = get_all_elements_by_xpath(self._driver, self.__book_frame_xpath)
             for book in books:
                 self.__scraped_data.append(self.__get_transformed_book(book))
 
