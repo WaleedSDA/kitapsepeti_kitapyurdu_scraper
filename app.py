@@ -1,14 +1,18 @@
-from flask import Flask, request
-
-app = Flask(__name__)
-
-
-@app.route('/scrape', methods=['GET'])
-def scrape():
-    website = request.args.get('website', None)
-    category_name = request.args.get('category_name', None)
-    
+from scrapers.kitapyurdu import KitapyurduScraper
+from multiprocessing import Process
 
 
-if __name__ == '__main__':
-    app.run()
+def scrape(category, scraper):
+    s = scraper(category)
+    s.start_scraping()
+
+
+kitapyurdu_cat = ["Kids", "General", "Literature", "Exams", "English", "non-literary"]
+for cat in kitapyurdu_cat:
+    p = Process(target=scrape, args=(cat, KitapyurduScraper))
+    p.start()
+
+kitapyurdu_cat = ["Kids", "General", "Literature", "Exams", "Turkish_Literature", "sci-fi", "Anime"]
+for cat in kitapyurdu_cat:
+    p = Process(target=scrape, args=(cat, KitapyurduScraper))
+    p.start()
