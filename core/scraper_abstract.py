@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, final
-from seleniumwire.undetected_chromedriver import Chrome
+from webbrowser import Chrome
+
 from core.data_classes.scraped_data import ScrapedData
 from core.db.scraped_data_col import ScrapedDataCol
 from core.errors import NoProductsFound, ErrorWhileScrapping, NoSuchCategory

@@ -65,12 +65,14 @@ those resulting from product unavailability. You can find the exceptions in `cor
 
 This project has been developed following the Test-Driven Development (TDD) approach.
 
-**Note:** Given the vast quantity of books on KitapSepeti, the number of pages to scrape has been set to 5 to simplify
+**Note:** Given the vast quantity of books on KitapSepeti, the number of pages to scrape has been set to 10 to simplify
 testing. To scrape all pages, remove line 65 in `scrapers/kitapsepeti`.
 
-**Note:** Docker image creation was intended but i have no access for an amd64 laptop (chrome does not exist for arm64)
-**Note:** i am using python3.11
-**Note:** i am using chrome V.115 (no chrome driver needed)
+**Note:** Docker image creation was intended but i have no access for an amd64 laptop (chrome does not exist for arm64).
+**Note:** i am using python3.11.
+**Note:** i am using chrome V.115 (no chrome driver needed).
+**Note:** running the script at 12am every day is as easy as opening your crontab file and adding 0 0 * * *
+/path/to/start.sh.
 
 A GitHub Action is in place to conduct testing of the code before each deployment.
 

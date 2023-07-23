@@ -1,4 +1,4 @@
-from seleniumwire import undetected_chromedriver as uc
+from selenium import webdriver
 
 
 def get_driver(use_headless_mode: bool = True):
@@ -16,7 +16,7 @@ def get_driver(use_headless_mode: bool = True):
         driver: A Selenium WebDriver instance.
     """
     # Create a new instance of ChromeOptions, which will allow us to customize the browser session.
-    options = uc.ChromeOptions()
+    options = webdriver.ChromeOptions()
 
     # If use_headless_mode is True, add the 'headless' argument.
     # This runs the browser in headless mode (without a GUI).
@@ -28,6 +28,6 @@ def get_driver(use_headless_mode: bool = True):
     options.add_argument('--ignore-certificate-errors')
 
     # Create a new instance of the Selenium WebDriver using the specified options.
-    driver = uc.Chrome(options=options)
+    driver = webdriver.Chrome(options=options)
 
     return driver

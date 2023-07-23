@@ -55,14 +55,14 @@ class KitapsepetiScraper(ScraperAbstract):
 
     @property
     def __book_frame_xpath(self):
-        if self._category_name == "cok-satan-kitaplar":
+        if self._category_name in ["cok-satan-kitaplar", "bilimkurgu"]:
             return '//div[contains(@class, "productDetails")]'
         return '(//div[contains(@class, "catalogWrapper")])[2]//div[contains(@class, "productDetails")]'
 
     def _scrape_raw_data(self):
         """Scrapes raw data from the website"""
         number_of_pages = self.__get_number_of_available_pages()
-        number_of_pages = 5
+        number_of_pages = 10
         for page_number in range(2, number_of_pages + 1):
 
             books = get_all_elements_by_xpath(self._driver, self.__book_frame_xpath)
